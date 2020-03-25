@@ -1,27 +1,17 @@
 const gulp = require('gulp')
+const webpack = require('webpack-stream')
+const webserver = require('gulp-webserver')
+
+const path = {
+	WASM: ['./assembly/*.ts', './assembly/**/*.ts'],
+	JS: ['./src/*.js', './src/**/*.js'],
+	HTML: ['./src/index.html'],
+}
 
 /*
-  Runtime variants:
-  "--runtime", "full" (default)
-    A proper memory manager and reference-counting based garbage collector, with runtime interfaces
-    being exported to the host for being able to create managed objects externally.
-
-  "--runtime", "half"
-    The same as full but without any exports, i.e. where creating objects externally is not required.
-    This allows the optimizer to eliminate parts of the runtime that are not needed.
-
-  "--runtime", "stub"
-    A minimalist arena memory manager without any means of freeing up memory again, but the same external
-    interface as full. Useful for very short-lived programs or programs with hardly any memory footprint,
-    while keeping the option to switch to full without any further changes. No garbage collection.
-
-  "--runtime", "none"
-    The same as stub but without any exports, for the same reasons as explained in half. Essentially
-    evaporates entirely after optimizations.
-
-    For more information see: https://docs.assemblyscript.org/details/runtime
+		For more information see: https://docs.assemblyscript.org/details
 */
-gulp.task('build', (callback) => {
+gulp.task('wasm', (callback) => {
 	const asc = require('assemblyscript/bin/asc')
 	asc.main(
 		[
@@ -29,9 +19,9 @@ gulp.task('build', (callback) => {
 			'--baseDir',
 			'assembly/src',
 			'--binaryFile',
-			'../../build/main.wasm',
+			'../../dist/wasm/main.wasm',
 			'--textFile',
-			'../../build/main.wat',
+			'../../dist/wasm/main.wat',
 			'--sourceMap',
 			'--measure',
 			'--runtime',
@@ -42,18 +32,34 @@ gulp.task('build', (callback) => {
 	)
 })
 
-var webserver = require('gulp-webserver')
+gulp.task('html', function () {
+	return gulp.src(path.HTML).pipe(gulp.dest('./dist'))
+})
+
+gulp.task('js', function () {
+	return gulp
+		.src(path.JS)
+		.pipe(
+			webpack({
+				config: require('./webpack.config.js'),
+			})
+		)
+		.pipe(gulp.dest('./dist'))
+})
 
 gulp.task('webserver', function () {
-	gulp.src('.').pipe(
+	gulp.src('./dist').pipe(
 		webserver({
 			host: '127.0.0.1',
 			port: 6639,
 			livereload: true,
 			open: true,
-			fallback: './src/index.html',
+			fallback: './index.html',
 		})
 	)
 })
 
-gulp.task('default', gulp.series('webserver'))
+gulp.watch(path.JS, gulp.series('html', 'js'))
+gulp.watch(path.WASM, gulp.series('wasm'))
+
+gulp.task('default', gulp.series('html', 'js', 'wasm', 'webserver'))

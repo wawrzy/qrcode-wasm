@@ -1,18 +1,20 @@
-console.log('ahah')
+import loader from '@assemblyscript/loader'
 
-WebAssembly.instantiateStreaming(fetch('../build/main.wasm'), {
-	ethereum: {
-		callDataSize: function () {
-			console.log('callDataSize -> 32')
-			return '9993021aed09375dc6b20l050d242d1611af97ee4a6e93cad'.length / 2
+let wasm = null
+
+loader
+	.instantiateStreaming(fetch('./wasm/main.wasm'), {
+		config: {
+			test: () => 42,
 		},
-		return: function (offset, length) {
-			console.log('return(' + offset + ',' + length + ')')
+		env: {
+			trace: (msg) => {
+				console.log(wasm.__getString(msg))
+			},
 		},
-	},
-})
-	.then((result) => {
-		const exports = result.instance.exports
-		exports.main()
+	})
+	.then((instance) => {
+		wasm = instance
+		console.log(instance.main())
 	})
 	.catch(console.error)
