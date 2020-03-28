@@ -17,9 +17,9 @@ loader
 	.then((instance) => {
 		wasm = instance
 
-		const message = 'Hello World'
+		const message = 'HELLO WORLD'
 		const ptrMessageToEncore = wasm.__retain(wasm.__allocString(message))
 
-		console.log(instance.main(ptrMessageToEncore))
+		console.log(instance.main(ptrMessageToEncore, 1))
 	})
 	.catch(console.error)
