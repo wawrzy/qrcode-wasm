@@ -25,7 +25,7 @@ gulp.task('wasm', (callback) => {
 			'--sourceMap',
 			'--measure',
 			'--runtime',
-			'half',
+			'full',
 			'--optimize',
 		],
 		callback

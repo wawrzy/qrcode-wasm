@@ -1,6 +1,14 @@
-import { test } from './config'
+import { DEBUG } from './config'
 
-export function main(): i32 {
-	trace('HEHOqqdddddddd')
-	return 2
+@inline
+function info(msg: string): void {
+	if (DEBUG() === 1) {
+		trace(msg)
+	}
+}
+
+export function main(arr: string): i32 {
+	info(arr)
+
+	return 42
 }

@@ -4,17 +4,22 @@ let wasm = null
 
 loader
 	.instantiateStreaming(fetch('./wasm/main.wasm'), {
+		// Should only be functions
 		config: {
-			test: () => 42,
+			DEBUG: () => 1, // 0 == false, 1 == true
 		},
 		env: {
 			trace: (msg) => {
-				console.log(wasm.__getString(msg))
+				console.log('[TRACE] : ' + wasm.__getString(msg))
 			},
 		},
 	})
 	.then((instance) => {
 		wasm = instance
-		console.log(instance.main())
+
+		const message = 'Hello World'
+		const ptrMessageToEncore = wasm.__retain(wasm.__allocString(message))
+
+		console.log(instance.main(ptrMessageToEncore))
 	})
 	.catch(console.error)

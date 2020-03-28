@@ -2,7 +2,8 @@
 	"name": "qrcode-wasm",
 	"version": "1.0.0",
 	"scripts": {
-		"start": "gulp"
+		"start": "gulp",
+		"wasm": "gulp wasm"
 	},
 	"main": "index.js",
 	"repository": "https://github.com/wawrzy/qrcode-wasm.git",

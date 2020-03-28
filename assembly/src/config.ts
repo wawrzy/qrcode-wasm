@@ -1,3 +1,3 @@
 // Config from JS
 
-export declare function test(): i32
+export declare function DEBUG(): i8
