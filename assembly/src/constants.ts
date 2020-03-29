@@ -48,6 +48,14 @@ alphaNumericTable.set(47, 43) // /
 alphaNumericTable.set(58, 44) // :
 
 // https://www.thonky.com/qr-code-tutorial/character-capacities
+// [
+//  [ v1
+//    [ Error L - Numeric, Error L - AlphaNumeric,  Error L - Byte ],
+//    [ Error M - Numeric, Error M - AlphaNumeric,  Error M - Byte ]
+//    ...
+//  ],
+//  ...
+// ]
 const characterCapacities = [
 	[
 		[41, 25, 17],
@@ -291,4 +299,11 @@ const characterCapacities = [
 	],
 ]
 
-export { alphaNumericTable, characterCapacities }
+// Max message size by encoding mode
+enum UpperLimits {
+	Numeric = 7089,
+	Alphanumeric = 4296,
+	Byte = 2953,
+}
+
+export { alphaNumericTable, characterCapacities, UpperLimits }
