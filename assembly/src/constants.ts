@@ -1,5 +1,5 @@
 // https://www.thonky.com/qr-code-tutorial/alphanumeric-table
-const alphaNumericTable = new Map<i32, i8>()
+const alphaNumericTable = new Map<i32, i32>()
 
 alphaNumericTable.set(48, 0) // 0
 alphaNumericTable.set(49, 1) // 1

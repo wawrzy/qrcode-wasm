@@ -20,6 +20,6 @@ loader
 		const message = 'HELLO WORLD'
 		const ptrMessageToEncore = wasm.__retain(wasm.__allocString(message))
 
-		console.log(instance.main(ptrMessageToEncore, 1))
+		console.log(instance.main(ptrMessageToEncore, 3))
 	})
 	.catch(console.error)
