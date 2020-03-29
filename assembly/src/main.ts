@@ -1,9 +1,10 @@
-import { DEBUG } from './config'
 import {
 	alphaNumericTable,
 	characterCapacities,
 	UpperLimits,
 } from './constants'
+import { debug, debugBuffer } from './logger'
+import { addToByteArray } from './utils'
 
 enum EncodingMode {
 	Numeric = 1, // Numeric mode
@@ -18,13 +19,6 @@ enum ErrorLevel {
 	M = 2, // 15% recovers
 	Q = 3, // 25% recovers
 	H = 4, // 30% recovers
-}
-
-@inline
-function info(msg: string): void {
-	if (DEBUG() === 1) {
-		trace(msg)
-	}
 }
 
 function getEncodingMode(message: string): EncodingMode {
@@ -94,47 +88,15 @@ function getVersionCapacities(
 	return characterCapacities[versionIds][errorIdx][encodingIdx]
 }
 
-// 🧠🧠🧠
-function addToByteArray(
-	array: Array<i32>, // buffer
-	currentSize: i32, // number of bits allocated in buffer
-	value: i32, // value to add
-	length: i32 // bits size of value (maximum 8)
-): i32 {
-	const arrIndex = Math.floor(currentSize / 8) as i32
-	const availableBits = 8 - (currentSize % 8)
-	let valueToAdd = value
-
-	if (length > availableBits) {
-		valueToAdd = valueToAdd >> (length - availableBits)
-		array[arrIndex] = array[arrIndex] | valueToAdd
-	} else {
-		valueToAdd = (valueToAdd << (8 - length)) >> (8 - availableBits)
-		array[arrIndex] = array[arrIndex] | valueToAdd
-	}
-
-	if (length > availableBits) {
-		array[arrIndex + 1] = value << (8 - length)
-
-		const toShift = 8 - (length - availableBits)
-		const mask = ((0b11111111 >> toShift) << toShift) >> availableBits
-
-		array[arrIndex + 1] &= mask
-		array[arrIndex + 1] <<= availableBits
-	}
-
-	return currentSize + length
-}
-
 export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
-	info('Message = ' + message)
+	debug('Message = ' + message)
 
 	const encodingMode = getEncodingMode(message)
-	info('encodingMode = ' + encodingMode.toString())
-	info('errorCorrectionLevel = ' + errorCorrectionLevel.toString())
+	debug('encodingMode = ' + encodingMode.toString())
+	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString())
 
 	const version = getVersion(message.length, encodingMode, errorCorrectionLevel)
-	info('version = ' + version.toString())
+	debug('version = ' + version.toString())
 
 	const buffer = new Array<i32>(
 		getVersionCapacities(version, encodingMode, errorCorrectionLevel)
@@ -142,6 +104,8 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 
 	// Testing
 	addToByteArray(buffer, 0, 0b0001, 4)
+
+	debugBuffer(buffer)
 
 	return buffer.length
 }
