@@ -12,3 +12,11 @@ export enum ErrorLevel {
 	Q = 3, // 25% recovers
 	H = 4, // 30% recovers
 }
+
+// Max message size by encoding mode
+export enum UpperLimits {
+	Numeric = 7089,
+	Alphanumeric = 4296,
+	Byte = 2953,
+	// Kanji not yet supported
+}

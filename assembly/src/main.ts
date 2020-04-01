@@ -2,11 +2,10 @@ import {
 	alphaNumericTable,
 	characterCapacities,
 	errorCorrectionCodeWords,
-	UpperLimits,
-} from './constants'
+} from './utils/constants'
 import { dataEncoding } from './encoder'
-import { EncodingMode, ErrorLevel } from './enums'
-import { debug, debugBuffer } from './logger'
+import { EncodingMode, ErrorLevel, UpperLimits } from './utils/enums'
+import { debug, debugBuffer } from './utils/logger'
 
 function getEncodingMode(message: string): EncodingMode {
 	let encodingMode: i32 = EncodingMode.Numeric
@@ -86,15 +85,16 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 	const version = getVersion(message.length, encodingMode, errorCorrectionLevel)
 	debug('version = ' + version.toString())
 
-	const buffer = new Array<i32>(
+	const encodedData = new Array<i32>(
 		getRequiredCapacities(version, errorCorrectionLevel)
 	).fill(0)
+	const errorCodewords = new Array<i32>(encodedData.length).fill(0)
 
-	debug('bufferLength = ' + buffer.length.toString())
+	debug('encodedDataLength = ' + encodedData.length.toString())
 
-	dataEncoding(buffer, message, encodingMode, version)
+	dataEncoding(encodedData, message, encodingMode, version)
 
-	debugBuffer(buffer)
+	debugBuffer(encodedData)
 
-	return buffer.length
+	return encodedData.length
 }

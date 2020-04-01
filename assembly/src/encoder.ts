@@ -1,7 +1,7 @@
-import { alphaNumericTable } from './constants'
-import { EncodingMode } from './enums'
-import { debug } from './logger'
-import { addToByteArray } from './utils'
+import { alphaNumericTable } from './utils/constants'
+import { EncodingMode } from './utils/enums'
+import { debug } from './utils/logger'
+import { addToByteArray } from './utils/utils'
 
 function setModeIndicator(buffer: Array<i32>, encodingMode: EncodingMode): i32 {
 	const modeIndicators = [0b0001, 0b0010, 0b0100]

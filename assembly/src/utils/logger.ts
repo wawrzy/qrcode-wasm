@@ -1,4 +1,4 @@
-import { DEBUG } from './config'
+import { DEBUG } from '../config'
 
 function decToBin(n: i32, res: string): string {
 	const quotient = Math.floor(n / 2) as i32
