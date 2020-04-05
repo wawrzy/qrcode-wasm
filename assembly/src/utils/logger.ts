@@ -23,3 +23,16 @@ export function debugBuffer(array: Array<i32>): void {
 		})
 	}
 }
+
+@inline
+export function debugArray(array: Array<i32>, msg: string = ''): void {
+	if (DEBUG() === 1) {
+		debug(
+			msg +
+				'Array length = ' +
+				array.length.toString() +
+				' => ' +
+				array.join(', ')
+		)
+	}
+}

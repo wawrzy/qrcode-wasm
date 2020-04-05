@@ -6,6 +6,8 @@ import {
 import { dataEncoding } from './encoder'
 import { EncodingMode, ErrorLevel, UpperLimits } from './utils/enums'
 import { debug, debugBuffer } from './utils/logger'
+import { generateErrorCodewords } from './error-correction'
+import { structureMessage } from './structure-message'
 
 function getEncodingMode(message: string): EncodingMode {
 	let encodingMode: i32 = EncodingMode.Numeric
@@ -62,13 +64,22 @@ function getVersion(
 	return -1
 }
 
+function getIndexErrorCorrectionCodeWords(
+	version: i32,
+	errorCorrectionLevel: ErrorLevel
+): i32 {
+	return (version - 1) * 4 + (errorCorrectionLevel - 1)
+}
+
 // https://www.thonky.com/qr-code-tutorial/error-correction-table
 function getRequiredCapacities(
 	version: i32,
 	errorCorrectionLevel: ErrorLevel
 ): i32 {
-	const index = (version - 1) * 4 + (errorCorrectionLevel - 1)
-	const codeWords = errorCorrectionCodeWords[index]
+	const codeWords =
+		errorCorrectionCodeWords[
+			getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
+		]
 
 	return codeWords[1] * codeWords[2] + codeWords[3] * codeWords[4]
 }
@@ -88,13 +99,27 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 	const encodedData = new Array<i32>(
 		getRequiredCapacities(version, errorCorrectionLevel)
 	).fill(0)
-	const errorCodewords = new Array<i32>(encodedData.length).fill(0)
+	const errorCodewords = new Array<Array<i32>>(0)
 
 	debug('encodedDataLength = ' + encodedData.length.toString())
 
 	dataEncoding(encodedData, message, encodingMode, version)
-
 	debugBuffer(encodedData)
+
+	generateErrorCodewords(
+		encodedData,
+		errorCodewords,
+		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
+	)
+
+	const finalMessage = new Array<i32>(0)
+
+	structureMessage(
+		finalMessage,
+		encodedData,
+		errorCodewords,
+		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
+	)
 
 	return encodedData.length
 }
