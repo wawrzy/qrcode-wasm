@@ -4,7 +4,7 @@ const webserver = require('gulp-webserver')
 
 const path = {
 	WASM: ['./assembly/*.ts', './assembly/**/*.ts'],
-	JS: ['./src/*.js', './src/**/*.js'],
+	JS: ['./src/*.js', './src/**/*.js', './src/*.vue', './src/**/*.vue'],
 	HTML: ['./src/index.html'],
 }
 

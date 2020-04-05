@@ -1,6 +1,15 @@
 import { errorCorrectionCodeWords } from './utils/constants'
 import { debugArray } from './utils/logger'
 
+/**
+ * Structure final message:
+ * 	[G1B1C1, G1B2C1, G2B1C1, ..., ERC1, ERC2, ... ]
+ *
+ * @param finalMessage
+ * @param encodedData
+ * @param errorCodewords
+ * @param indexErrorCorrectionCodeWords
+ */
 export function structureMessage(
 	finalMessage: Array<i32>,
 	encodedData: Array<i32>,
@@ -31,14 +40,10 @@ export function structureMessage(
 		step += 1
 	}
 
-	step = 0
-
-	while (step < errorCorrectionCodeword[0]) {
+	for (step = 0; step < errorCorrectionCodeword[0]; step++) {
 		for (let i = 0; i < errorCodewords.length; i++) {
 			finalMessage.push(errorCodewords[i][step])
 		}
-
-		++step
 	}
 
 	debugArray(finalMessage, 'finalMessage = ')
