@@ -9,6 +9,10 @@ import { debug, debugBuffer } from './utils/logger'
 import { generateErrorCodewords } from './error-correction'
 import { structureMessage } from './structure-message'
 
+/**
+ * Get best encoding mode of the message according to char code values and message length
+ * @param message
+ */
 function getEncodingMode(message: string): EncodingMode {
 	let encodingMode: i32 = EncodingMode.Numeric
 
@@ -44,7 +48,13 @@ function getEncodingMode(message: string): EncodingMode {
 	return encodingMode
 }
 
-// Minimal version = 1 / maximal = 40 / -1 Too large
+/**
+ * Get best qr code version according to: message length, encoding mode and error correction level
+ * Minimal version = 1 / maximal = 40 / -1 Too large
+ * @param msgLength
+ * @param encodingMode
+ * @param errorCorrectionLevel
+ */
 function getVersion(
 	msgLength: i32,
 	encodingMode: EncodingMode,
@@ -64,6 +74,11 @@ function getVersion(
 	return -1
 }
 
+/**
+ * Get errorCorrectionCodeWords array index according to version and error correction level
+ * @param version
+ * @param errorCorrectionLevel
+ */
 function getIndexErrorCorrectionCodeWords(
 	version: i32,
 	errorCorrectionLevel: ErrorLevel
@@ -71,7 +86,12 @@ function getIndexErrorCorrectionCodeWords(
 	return (version - 1) * 4 + (errorCorrectionLevel - 1)
 }
 
-// https://www.thonky.com/qr-code-tutorial/error-correction-table
+/**
+ * Get required capacities for encoded data (in bytes)
+ * Reference: https://www.thonky.com/qr-code-tutorial/error-correction-table
+ * @param version
+ * @param errorCorrectionLevel
+ */
 function getRequiredCapacities(
 	version: i32,
 	errorCorrectionLevel: ErrorLevel
@@ -89,6 +109,8 @@ function getRequiredCapacities(
 export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 	debug('Message = ' + message)
 
+	// Initialization
+
 	const encodingMode = getEncodingMode(message)
 	debug('encodingMode = ' + encodingMode.toString())
 	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString())
@@ -96,21 +118,28 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 	const version = getVersion(message.length, encodingMode, errorCorrectionLevel)
 	debug('version = ' + version.toString())
 
+	// Encoding
+
 	const encodedData = new Array<i32>(
 		getRequiredCapacities(version, errorCorrectionLevel)
 	).fill(0)
-	const errorCodewords = new Array<Array<i32>>(0)
 
 	debug('encodedDataLength = ' + encodedData.length.toString())
 
 	dataEncoding(encodedData, message, encodingMode, version)
 	debugBuffer(encodedData)
 
+	// Error correction
+
+	const errorCodewords = new Array<Array<i32>>(0)
+
 	generateErrorCodewords(
 		encodedData,
 		errorCodewords,
 		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
 	)
+
+	// Structure final message (merge encoded data and error correction codewords)
 
 	const finalMessage = new Array<i32>(0)
 

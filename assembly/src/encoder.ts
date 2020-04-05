@@ -3,8 +3,13 @@ import { EncodingMode } from './utils/enums'
 import { debug } from './utils/logger'
 import { addToByteArray } from './utils/utils'
 
+/**
+ * Add mode indicator according to encdoding mode
+ * @param buffer
+ * @param encodingMode
+ */
 function setModeIndicator(buffer: Array<i32>, encodingMode: EncodingMode): i32 {
-	const modeIndicators = [0b0001, 0b0010, 0b0100]
+	const modeIndicators = [0b0001, 0b0010, 0b0100] // [Numeric, Alpha num, Byte]
 
 	return addToByteArray(buffer, 0, modeIndicators[encodingMode - 1], 4)
 }
@@ -130,7 +135,6 @@ export function dataEncoding(
 		bufferSize
 	)
 
-	// TODO: Add other encoding mode
 	if (encodingMode === EncodingMode.Numeric) {
 		bufferSize = encodeNumeric(buffer, message, bufferSize)
 	} else if (encodingMode === EncodingMode.Alphanumeric) {
@@ -144,6 +148,7 @@ export function dataEncoding(
 		bufferSize = addToByteArray(buffer, bufferSize, 0, 8 - (bufferSize % 8))
 	}
 
+	// Fill remaining space with following bytes: 236, 17
 	if (bufferSize / 8 !== buffer.length) {
 		const remainingBytes = buffer.length - bufferSize / 8
 

@@ -1,9 +1,19 @@
-// 🧠🧠🧠
+/**
+ * 🧠🧠🧠
+ * A lot of blood has flowed to write these lines.
+ *
+ * Add bits (custom amount) to an array of bytes
+ *
+ * @param array buffer
+ * @param currentSize number of bits allocated in buffer
+ * @param value value to add
+ * @param length ength of value in bits
+ */
 export function addToByteArray(
-	array: Array<i32>, // buffer
-	currentSize: i32, // number of bits allocated in buffer
-	value: i32, // value to add
-	length: i32 // length of value in bits
+	array: Array<i32>,
+	currentSize: i32,
+	value: i32,
+	length: i32
 ): i32 {
 	// Recursive operation when length > 8
 	if (length > 8) {
