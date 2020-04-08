@@ -4,8 +4,14 @@ const webserver = require('gulp-webserver')
 
 const path = {
 	WASM: ['./assembly/*.ts', './assembly/**/*.ts'],
-	JS: ['./src/*.js', './src/**/*.js', './src/*.vue', './src/**/*.vue'],
-	HTML: ['./src/index.html'],
+	DEMO: [
+		'./demo/src/*.js',
+		'./demo/src/**/*.js',
+		'./demo/src/*.vue',
+		'./demo/src/**/*.vue',
+	],
+	DEMO_STATIC: ['./demo/src/index.html', './build/wasm/*'],
+	DEMO_DIST: './demo/dist',
 }
 
 /*
@@ -19,11 +25,12 @@ gulp.task('wasm', (callback) => {
 			'--baseDir',
 			'assembly/src',
 			'--binaryFile',
-			'../../dist/wasm/main.wasm',
+			'../../build/wasm/main.wasm',
 			'--textFile',
-			'../../dist/wasm/main.wat',
+			'../../build/wasm/main.wat',
 			'--sourceMap',
 			'--measure',
+			'--importMemory',
 			'--runtime',
 			'full',
 			'--optimize',
@@ -32,23 +39,23 @@ gulp.task('wasm', (callback) => {
 	)
 })
 
-gulp.task('html', function () {
-	return gulp.src(path.HTML).pipe(gulp.dest('./dist'))
+gulp.task('demo_static', function () {
+	return gulp.src(path.DEMO_STATIC).pipe(gulp.dest(path.DEMO_DIST))
 })
 
-gulp.task('js', function () {
+gulp.task('demo_js', function () {
 	return gulp
-		.src(path.JS)
+		.src(path.DEMO)
 		.pipe(
 			webpack({
-				config: require('./webpack.config.js'),
+				config: require('./demo/webpack.config.js'),
 			})
 		)
-		.pipe(gulp.dest('./dist'))
+		.pipe(gulp.dest(path.DEMO_DIST))
 })
 
-gulp.task('webserver', function () {
-	gulp.src('./dist').pipe(
+gulp.task('demo_webserver', function () {
+	gulp.src(path.DEMO_DIST).pipe(
 		webserver({
 			host: '127.0.0.1',
 			port: 6639,
@@ -59,7 +66,10 @@ gulp.task('webserver', function () {
 	)
 })
 
-gulp.watch(path.JS, gulp.series('html', 'js'))
-gulp.watch(path.WASM, gulp.series('wasm'))
+gulp.watch(path.DEMO, gulp.parallel('demo_static', 'demo_js'))
+gulp.watch(path.WASM, gulp.series('wasm', 'demo_static'))
 
-gulp.task('default', gulp.series('html', 'js', 'wasm', 'webserver'))
+gulp.task(
+	'default',
+	gulp.series('demo_js', 'wasm', 'demo_static', 'demo_webserver')
+)

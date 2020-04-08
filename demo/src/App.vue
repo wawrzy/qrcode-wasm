@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		Test
+		todo
 	</div>
 </template>
 
@@ -9,12 +9,14 @@ import loader from '@assemblyscript/loader'
 
 export default {
 	name: 'app',
-	components: {},
 	mounted: () => {
 		let wasm = null
 
+		const memory = new WebAssembly.Memory({ initial: 1 })
+
+		const t0 = performance.now()
 		loader
-			.instantiateStreaming(fetch('./wasm/main.wasm'), {
+			.instantiateStreaming(fetch('./main.wasm'), {
 				// Should only be functions
 				config: {
 					DEBUG: () => 1, // 0 == false, 1 == true
@@ -23,6 +25,7 @@ export default {
 					trace: (msg) => {
 						console.log('[TRACE] : ' + wasm.__getString(msg))
 					},
+					memory,
 				},
 			})
 			.then((instance) => {
@@ -31,7 +34,13 @@ export default {
 				const message = 'HELLO WORLD'
 				const ptrMessageToEncore = wasm.__retain(wasm.__allocString(message))
 
-				console.log(instance.main(ptrMessageToEncore, 2))
+				instance.main(ptrMessageToEncore, 2)
+
+				const mem = new Int32Array(memory.buffer) // matrix
+
+				const t1 = performance.now()
+
+				console.log('Call to doSomething took ' + (t1 - t0) + ' milliseconds.')
 			})
 			.catch(console.error)
 	},

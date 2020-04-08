@@ -1,161 +1,111 @@
 import { alphaNumericTable } from './utils/constants'
 import { EncodingMode } from './utils/enums'
 import { debug } from './utils/logger'
-import { addToByteArray } from './utils/utils'
+import { Buffer } from './utils/buffer'
 
 /**
  * Add mode indicator according to encdoding mode
  * @param buffer
  * @param encodingMode
  */
-function setModeIndicator(buffer: Array<i32>, encodingMode: EncodingMode): i32 {
+function setModeIndicator(
+	buffer: Buffer<i32>,
+	encodingMode: EncodingMode
+): void {
 	const modeIndicators = [0b0001, 0b0010, 0b0100] // [Numeric, Alpha num, Byte]
 
-	return addToByteArray(buffer, 0, modeIndicators[encodingMode - 1], 4)
+	buffer.push(modeIndicators[encodingMode - 1], 4)
 }
 
 function setCharacterCountIndicator(
-	buffer: Array<i32>,
+	buffer: Buffer<i32>,
 	messageLength: i32,
 	encodingMode: EncodingMode,
-	version: i32,
-	bufferSize: i32
-): i32 {
+	version: i32
+): void {
 	if (version <= 9) {
 		const countIndicatorSizes = [10, 9, 8]
 
-		return addToByteArray(
-			buffer,
-			bufferSize,
-			messageLength,
-			countIndicatorSizes[encodingMode - 1]
-		)
+		buffer.push(messageLength, countIndicatorSizes[encodingMode - 1])
 	} else if (version <= 26) {
 		const countIndicatorSizes = [12, 11, 16]
 
-		return addToByteArray(
-			buffer,
-			bufferSize,
-			messageLength,
-			countIndicatorSizes[encodingMode - 1]
-		)
+		buffer.push(messageLength, countIndicatorSizes[encodingMode - 1])
 	} else {
 		const countIndicatorSizes = [14, 13, 16]
 
-		return addToByteArray(
-			buffer,
-			bufferSize,
-			messageLength,
-			countIndicatorSizes[encodingMode - 1]
-		)
+		buffer.push(messageLength, countIndicatorSizes[encodingMode - 1])
 	}
 }
 
 // https://www.thonky.com/qr-code-tutorial/alphanumeric-mode-encoding
-function encodeAlphaNumeric(
-	buffer: Array<i32>,
-	message: string,
-	bufferSize: i32
-): i32 {
-	let currentBufferSize = bufferSize
-
+function encodeAlphaNumeric(buffer: Buffer<i32>, message: string): void {
 	for (let i = 0; i < message.length; i += 2) {
 		if (i + 1 === message.length) {
 			const value = alphaNumericTable.get(message.charCodeAt(i))
-			return addToByteArray(buffer, currentBufferSize, value, 6)
+
+			buffer.push(value, 6)
 		} else {
 			const value =
 				alphaNumericTable.get(message.charCodeAt(i)) * 45 +
 				alphaNumericTable.get(message.charCodeAt(i + 1))
-			currentBufferSize = addToByteArray(buffer, currentBufferSize, value, 11)
+
+			buffer.push(value, 11)
 		}
 	}
-
-	return currentBufferSize
 }
 
-function encodeNumeric(
-	buffer: Array<i32>,
-	message: string,
-	bufferSize: i32
-): i32 {
-	let currentBufferSize = bufferSize
-
+function encodeNumeric(buffer: Buffer<i32>, message: string): void {
 	for (let i = 0; i < message.length; i += 3) {
 		if (i + 3 > message.length) {
 			const finalGroup = parseInt(message.slice(i), 10) as i32
-			return addToByteArray(
-				buffer,
-				currentBufferSize,
-				finalGroup,
-				3 * finalGroup.toString().length + 1
-			)
+
+			buffer.push(finalGroup, 3 * finalGroup.toString().length + 1)
 		} else {
 			const group = parseInt(message.slice(i, i + 3), 10) as i32
-			currentBufferSize = addToByteArray(
-				buffer,
-				currentBufferSize,
-				group,
-				3 * group.toString().length + 1
-			)
+
+			buffer.push(group, 3 * group.toString().length + 1)
 		}
 	}
-
-	return currentBufferSize
 }
 
-function encodeByte(buffer: Array<i32>, message: string, bufferSize: i32): i32 {
-	let currentBufferSize = bufferSize
-
+function encodeByte(buffer: Buffer<i32>, message: string): void {
 	for (let i = 0; i < message.length; i++) {
-		currentBufferSize = addToByteArray(
-			buffer,
-			currentBufferSize,
-			message.charCodeAt(i),
-			8
-		)
+		buffer.push(message.charCodeAt(i), 8)
 	}
-
-	return currentBufferSize
 }
 
 export function dataEncoding(
-	buffer: Array<i32>,
+	buffer: Buffer<i32>,
 	message: string,
 	encodingMode: EncodingMode,
 	version: i32
 ): void {
-	let bufferSize = setModeIndicator(buffer, encodingMode)
+	setModeIndicator(buffer, encodingMode)
 
-	bufferSize = setCharacterCountIndicator(
-		buffer,
-		message.length,
-		encodingMode,
-		version,
-		bufferSize
-	)
+	setCharacterCountIndicator(buffer, message.length, encodingMode, version)
 
 	if (encodingMode === EncodingMode.Numeric) {
-		bufferSize = encodeNumeric(buffer, message, bufferSize)
+		encodeNumeric(buffer, message)
 	} else if (encodingMode === EncodingMode.Alphanumeric) {
-		bufferSize = encodeAlphaNumeric(buffer, message, bufferSize)
+		encodeAlphaNumeric(buffer, message)
 	} else if (encodingMode === EncodingMode.Byte) {
-		bufferSize = encodeByte(buffer, message, bufferSize)
+		encodeByte(buffer, message)
 	}
 
 	// Add pad bits to have a multiple of 8 size
-	if (bufferSize % 8 > 0) {
-		bufferSize = addToByteArray(buffer, bufferSize, 0, 8 - (bufferSize % 8))
+	if (buffer.size % 8 > 0) {
+		buffer.push(0, 8 - (buffer.size % 8))
 	}
 
 	// Fill remaining space with following bytes: 236, 17
-	if (bufferSize / 8 !== buffer.length) {
-		const remainingBytes = buffer.length - bufferSize / 8
+	if (buffer.size / 8 !== buffer.current.length) {
+		const remainingBytes = buffer.current.length - buffer.size / 8
 
 		for (let i = 0; i < remainingBytes; i++) {
-			bufferSize = addToByteArray(buffer, bufferSize, i % 2 === 0 ? 236 : 17, 8)
+			buffer.push(i % 2 === 0 ? 236 : 17, 8)
 		}
 	}
 
-	debug('bufferSize = ' + buffer.length.toString())
+	debug('bufferSize = ' + buffer.size.toString())
 }

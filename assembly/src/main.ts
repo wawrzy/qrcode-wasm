@@ -8,6 +8,9 @@ import { EncodingMode, ErrorLevel, UpperLimits } from './utils/enums'
 import { debug, debugBuffer } from './utils/logger'
 import { generateErrorCodewords } from './error-correction'
 import { structureMessage } from './structure-message'
+import { modulePlacement } from './module-placement'
+import { Buffer } from './utils/buffer'
+import { Matrix, exportMatrix } from './utils/matrix'
 
 /**
  * Get best encoding mode of the message according to char code values and message length
@@ -120,21 +123,21 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 
 	// Encoding
 
-	const encodedData = new Array<i32>(
+	const encodedData = new Buffer<i32>(
 		getRequiredCapacities(version, errorCorrectionLevel)
-	).fill(0)
+	)
 
-	debug('encodedDataLength = ' + encodedData.length.toString())
+	debug('encodedDataLength = ' + encodedData.size.toString())
 
 	dataEncoding(encodedData, message, encodingMode, version)
-	debugBuffer(encodedData)
+	debugBuffer(encodedData.current)
 
 	// Error correction
 
 	const errorCodewords = new Array<Array<i32>>(0)
 
 	generateErrorCodewords(
-		encodedData,
+		encodedData.current,
 		errorCodewords,
 		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
 	)
@@ -145,10 +148,18 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 
 	structureMessage(
 		finalMessage,
-		encodedData,
+		encodedData.current,
 		errorCodewords,
 		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
 	)
 
-	return encodedData.length
+	const matrix = new Matrix((version - 1) * 4 + 21, version)
+
+	modulePlacement(matrix)
+
+	exportMatrix(matrix)
+
+	return encodedData.size
 }
+
+// [TRACE] : finalMessage = Array length = 26 => 32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17, 196, 35, 39, 119, 235, 215, 231, 226, 93, 23

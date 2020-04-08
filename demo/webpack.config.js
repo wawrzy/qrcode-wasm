@@ -12,7 +12,7 @@ module.exports = {
 		],
 	},
 	plugins: [new VueLoaderPlugin()],
-	entry: './src/main.js',
+	entry: path.resolve(__dirname, 'src/main.js'),
 	devtool: 'source-map',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
