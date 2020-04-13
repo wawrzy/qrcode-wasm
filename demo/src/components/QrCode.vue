@@ -1,10 +1,16 @@
 <template>
-	<div>
+	<div class="root">
 		<div>Size = {{ size }}</div>
-		<div v-for="(line, index) in qrCodeData" v-bind:key="index">
-			<span v-for="(module, indexModule) in line" v-bind:key="indexModule">
-				{{ module }}
-			</span>
+		<div v-for="(line, index) in qrCodeData" v-bind:key="index" class="line">
+			<div
+				v-for="(module, indexModule) in line"
+				v-bind:key="indexModule"
+				v-bind:class="{
+					black: module === 1,
+					white: module === 0,
+					module: true,
+				}"
+			/>
 		</div>
 	</div>
 </template>
@@ -12,6 +18,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+
+import './QrCode.scss';
 
 const Props = Vue.extend({
 	props: {

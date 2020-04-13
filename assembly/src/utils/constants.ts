@@ -47,6 +47,50 @@ alphaNumericTable.set(46, 42) // .
 alphaNumericTable.set(47, 43) // /
 alphaNumericTable.set(58, 44) // :
 
+// Align patterns positions in matrix according to qr code version
+// Ref: https://www.thonky.com/qr-code-tutorial/alignment-pattern-locations
+const alignPatterns = new Map<i32, Array<i32>>();
+
+alignPatterns.set(2, [6, 18])
+alignPatterns.set(3, [6, 22])
+alignPatterns.set(4, [6, 26])
+alignPatterns.set(5, [6, 30])
+alignPatterns.set(6, [6, 34])
+alignPatterns.set(7, [6, 22, 38])
+alignPatterns.set(8, [6, 24, 42])
+alignPatterns.set(9, [6, 26, 46])
+alignPatterns.set(10, [6, 28, 50])
+alignPatterns.set(11, [6, 30, 54])
+alignPatterns.set(12, [6, 32, 58])
+alignPatterns.set(13, [6, 34, 62])
+alignPatterns.set(14, [6, 26, 46, 66])
+alignPatterns.set(15, [6, 26, 48, 70])
+alignPatterns.set(16, [6, 26, 50, 74])
+alignPatterns.set(17, [6, 30, 54, 78])
+alignPatterns.set(18, [6, 30, 56, 82])
+alignPatterns.set(19, [6, 30, 58, 86])
+alignPatterns.set(20, [6, 34, 62, 90])
+alignPatterns.set(21, [6, 28, 50, 72, 94])
+alignPatterns.set(22, [6, 26, 50, 74, 98])
+alignPatterns.set(23, [6, 30, 54, 78, 102])
+alignPatterns.set(24, [6, 28, 54, 80, 106])
+alignPatterns.set(25, [6, 32, 58, 84, 110])
+alignPatterns.set(26, [6, 30, 58, 86, 114])
+alignPatterns.set(27, [6, 34, 62, 90, 118])
+alignPatterns.set(28, [6, 26, 50, 74, 98, 122])
+alignPatterns.set(29, [6, 30, 54, 78, 102, 126])
+alignPatterns.set(30, [6, 26, 52, 78, 104, 130])
+alignPatterns.set(31, [6, 30, 56, 82, 108, 134])
+alignPatterns.set(32, [6, 34, 60, 86, 112, 138])
+alignPatterns.set(33, [6, 30, 58, 86, 114, 142])
+alignPatterns.set(34, [6, 34, 62, 90, 118, 146])
+alignPatterns.set(35, [6, 30, 54, 78, 102, 126, 150])
+alignPatterns.set(36, [6, 24, 50, 76, 102, 128, 154])
+alignPatterns.set(37, [6, 28, 54, 80, 106, 132, 158])
+alignPatterns.set(38, [6, 32, 58, 84, 110, 136, 162])
+alignPatterns.set(39, [6, 26, 54, 82, 110, 138, 166])
+alignPatterns.set(40, [6, 30, 58, 86, 114, 142, 170])
+
 // https://www.thonky.com/qr-code-tutorial/character-capacities
 // [
 //  [ v1
@@ -483,4 +527,4 @@ generatorsPolynomial.set(30, [0, 41, 173, 145, 152, 216, 31, 179, 182, 50, 48, 1
 // index = exponent of a -> value = integer
 const antilogs = [1, 2, 4, 8, 16, 32, 64, 128, 29, 58, 116, 232, 205, 135, 19, 38, 76, 152, 45, 90, 180, 117, 234, 201, 143, 3, 6, 12, 24, 48, 96, 192, 157, 39, 78, 156, 37, 74, 148, 53, 106, 212, 181, 119, 238, 193, 159, 35, 70, 140, 5, 10, 20, 40, 80, 160, 93, 186, 105, 210, 185, 111, 222, 161, 95, 190, 97, 194, 153, 47, 94, 188, 101, 202, 137, 15, 30, 60, 120, 240, 253, 231, 211, 187, 107, 214, 177, 127, 254, 225, 223, 163, 91, 182, 113, 226, 217, 175, 67, 134, 17, 34, 68, 136, 13, 26, 52, 104, 208, 189, 103, 206, 129, 31, 62, 124, 248, 237, 199, 147, 59, 118, 236, 197, 151, 51, 102, 204, 133, 23, 46, 92, 184, 109, 218, 169, 79, 158, 33, 66, 132, 21, 42, 84, 168, 77, 154, 41, 82, 164, 85, 170, 73, 146, 57, 114, 228, 213, 183, 115, 230, 209, 191, 99, 198, 145, 63, 126, 252, 229, 215, 179, 123, 246, 241, 255, 227, 219, 171, 75, 150, 49, 98, 196, 149, 55, 110, 220, 165, 87, 174, 65, 130, 25, 50, 100, 200, 141, 7, 14, 28, 56, 112, 224, 221, 167, 83, 166, 81, 162, 89, 178, 121, 242, 249, 239, 195, 155, 43, 86, 172, 69, 138, 9, 18, 36, 72, 144, 61, 122, 244, 245, 247, 243, 251, 235, 203, 139, 11, 22, 44, 88, 176, 125, 250, 233, 207, 131, 27, 54, 108, 216, 173, 71, 142, 1];
 
-export { alphaNumericTable, characterCapacities, errorCorrectionCodeWords, generatorsPolynomial, antilogs }
+export { alphaNumericTable, characterCapacities, errorCorrectionCodeWords, generatorsPolynomial, antilogs, alignPatterns }

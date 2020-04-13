@@ -2,40 +2,40 @@ import {
 	alphaNumericTable,
 	characterCapacities,
 	errorCorrectionCodeWords,
-} from './utils/constants'
-import { dataEncoding } from './encoder'
-import { EncodingMode, ErrorLevel, UpperLimits } from './utils/enums'
-import { debug, debugBuffer } from './utils/logger'
-import { generateErrorCodewords } from './error-correction'
-import { structureMessage } from './structure-message'
-import { modulePlacement } from './module-placement'
-import { Buffer } from './utils/buffer'
-import { Matrix, exportMatrix } from './utils/matrix'
+} from './utils/constants';
+import { dataEncoding } from './encoder';
+import { EncodingMode, ErrorLevel, UpperLimits } from './utils/enums';
+import { debug, debugBuffer } from './utils/logger';
+import { generateErrorCodewords } from './error-correction';
+import { structureMessage } from './structure-message';
+import { modulePlacement } from './module-placement';
+import { Buffer } from './utils/buffer';
+import { Matrix, exportMatrix } from './utils/matrix';
 
 /**
  * Get best encoding mode of the message according to char code values and message length
  * @param message
  */
 function getEncodingMode(message: string): EncodingMode {
-	let encodingMode: i32 = EncodingMode.Numeric
+	let encodingMode: i32 = EncodingMode.Numeric;
 
 	for (let i = 0; i < message.length; i++) {
-		const charCode = message.charCodeAt(i)
+		const charCode = message.charCodeAt(i);
 
 		if (charCode < 48 || charCode > 57) {
 			if (message.length <= UpperLimits.Alphanumeric) {
-				encodingMode = EncodingMode.Alphanumeric
+				encodingMode = EncodingMode.Alphanumeric;
 			} else {
 				return message.length > UpperLimits.Byte
 					? EncodingMode.Invalid
-					: EncodingMode.Byte
+					: EncodingMode.Byte;
 			}
 		}
 
 		if (!alphaNumericTable.has(charCode)) {
 			return message.length > UpperLimits.Byte
 				? EncodingMode.Invalid
-				: EncodingMode.Byte
+				: EncodingMode.Byte;
 		}
 	}
 
@@ -45,10 +45,10 @@ function getEncodingMode(message: string): EncodingMode {
 	) {
 		return message.length > UpperLimits.Byte
 			? EncodingMode.Invalid
-			: EncodingMode.Byte
+			: EncodingMode.Byte;
 	}
 
-	return encodingMode
+	return encodingMode;
 }
 
 /**
@@ -63,18 +63,18 @@ function getVersion(
 	encodingMode: EncodingMode,
 	errorCorrectionLevel: ErrorLevel
 ): i32 {
-	const errorIdx = errorCorrectionLevel - 1
-	const encodingIdx = encodingMode - 1
+	const errorIdx = errorCorrectionLevel - 1;
+	const encodingIdx = encodingMode - 1;
 
 	for (let i = 0; i < characterCapacities.length; i++) {
-		const size = characterCapacities[i][errorIdx][encodingIdx]
+		const size = characterCapacities[i][errorIdx][encodingIdx];
 
 		if (msgLength <= size) {
-			return i + 1
+			return i + 1;
 		}
 	}
 
-	return -1
+	return -1;
 }
 
 /**
@@ -86,7 +86,7 @@ function getIndexErrorCorrectionCodeWords(
 	version: i32,
 	errorCorrectionLevel: ErrorLevel
 ): i32 {
-	return (version - 1) * 4 + (errorCorrectionLevel - 1)
+	return (version - 1) * 4 + (errorCorrectionLevel - 1);
 }
 
 /**
@@ -102,64 +102,68 @@ function getRequiredCapacities(
 	const codeWords =
 		errorCorrectionCodeWords[
 			getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
-		]
+		];
 
-	return codeWords[1] * codeWords[2] + codeWords[3] * codeWords[4]
+	return codeWords[1] * codeWords[2] + codeWords[3] * codeWords[4];
 }
 
 // TODO: Error management
 // TODO: Automatically detect best errorCorrectionLevel
 export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
-	debug('Message = ' + message)
+	debug('Message = ' + message);
 
 	// Initialization
 
-	const encodingMode = getEncodingMode(message)
-	debug('encodingMode = ' + encodingMode.toString())
-	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString())
+	const encodingMode = getEncodingMode(message);
+	debug('encodingMode = ' + encodingMode.toString());
+	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString());
 
-	const version = getVersion(message.length, encodingMode, errorCorrectionLevel)
-	debug('version = ' + version.toString())
+	const version = getVersion(
+		message.length,
+		encodingMode,
+		errorCorrectionLevel
+	);
+	debug('version = ' + version.toString());
 
 	// Encoding
 
 	const encodedData = new Buffer<i32>(
 		getRequiredCapacities(version, errorCorrectionLevel)
-	)
+	);
 
-	debug('encodedDataLength = ' + encodedData.size.toString())
+	debug('encodedDataLength = ' + encodedData.size.toString());
 
-	dataEncoding(encodedData, message, encodingMode, version)
-	debugBuffer(encodedData.current)
+	dataEncoding(encodedData, message, encodingMode, version);
+	debugBuffer(encodedData.current);
 
 	// Error correction
 
-	const errorCodewords = new Array<Array<i32>>(0)
+	const errorCodewords = new Array<Array<i32>>(0);
 
 	generateErrorCodewords(
 		encodedData.current,
 		errorCodewords,
 		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
-	)
+	);
 
 	// Structure final message (merge encoded data and error correction codewords)
 
-	const finalMessage = new Array<i32>(0)
+	const finalMessage = new Array<i32>(0);
 
 	structureMessage(
 		finalMessage,
 		encodedData.current,
 		errorCodewords,
 		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
-	)
+	);
 
-	const matrix = new Matrix((version - 1) * 4 + 21, version)
+	const matrix = new Matrix((version - 1) * 4 + 21, version);
 
-	modulePlacement(matrix)
+	modulePlacement(matrix);
 
-	exportMatrix(matrix)
+	exportMatrix(matrix);
 
-	return encodedData.size
+	return encodedData.size;
 }
 
 // [TRACE] : finalMessage = Array length = 26 => 32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17, 196, 35, 39, 119, 235, 215, 231, 226, 93, 23
