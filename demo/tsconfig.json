@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"strict": true,
+		"module": "es2015",
+		"experimentalDecorators": true,
+		"noImplicitAny": false,
+		"strictNullChecks": false,
+		"moduleResolution": "node"
+	},
+	"include": ["./**/*"]
+}

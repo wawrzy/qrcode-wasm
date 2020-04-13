@@ -10,16 +10,29 @@
 	"author": "julien <wawrzyniakjulien@gmail.com>",
 	"license": "MIT",
 	"devDependencies": {
-		"@assemblyscript/loader": "^0.9.4",
+		"@babel/core": "^7.9.0",
+		"@babel/plugin-proposal-class-properties": "^7.8.3",
+		"@babel/plugin-proposal-decorators": "^7.8.3",
+		"@babel/plugin-syntax-jsx": "^7.8.3",
+		"@babel/preset-env": "^7.9.5",
 		"assemblyscript": "^0.9.4",
+		"babel-helper-vue-jsx-merge-props": "^2.0.3",
+		"babel-loader": "^8.1.0",
+		"babel-plugin-syntax-jsx": "^6.18.0",
+		"babel-plugin-transform-vue-jsx": "^3.7.0",
 		"gulp": "^4.0.2",
 		"gulp-webserver": "^0.9.1",
 		"prettier": "^2.0.1",
+		"ts-loader": "^6.2.2",
+		"typescript": "^3.8.3",
 		"vue-loader": "^15.9.1",
 		"vue-template-compiler": "^2.6.11",
 		"webpack-stream": "^5.2.1"
 	},
 	"dependencies": {
-		"vue": "^2.6.11"
+		"@assemblyscript/loader": "^0.9.4",
+		"vue": "^2.6.11",
+		"vue-class-component": "^7.2.3",
+		"vuex": "^3.1.3"
 	}
 }

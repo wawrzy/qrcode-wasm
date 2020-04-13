@@ -6,13 +6,27 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test: /\.tsx?$/,
+				exclude: /node_modules/,
+				use: [
+					'babel-loader',
+					{
+						loader: 'ts-loader',
+						options: {
+							appendTsSuffixTo: [/\.vue$/],
+							appendTsxSuffixTo: [/\.vue$/]
+						}
+					}
+				]
+			},
+			{
 				test: /\.vue$/,
 				loader: 'vue-loader',
 			},
 		],
 	},
 	plugins: [new VueLoaderPlugin()],
-	entry: path.resolve(__dirname, 'src/main.js'),
+	entry: path.resolve(__dirname, 'src/main.ts'),
 	devtool: 'source-map',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
