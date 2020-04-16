@@ -46,7 +46,7 @@ export default class Generator extends Vue {
 				const ptrMessageToEncore = (wasm.__retain as Function)(
 					wasm.__allocString(message)
 				);
-				(instance as any).main(ptrMessageToEncore, 2);
+				(instance as any).main(ptrMessageToEncore, 3);
 
 				this.matrix = new Int32Array(memory.buffer); // matrix
 

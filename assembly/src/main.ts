@@ -9,6 +9,7 @@ import { debug, debugBuffer } from './utils/logger';
 import { generateErrorCodewords } from './error-correction';
 import { structureMessage } from './structure-message';
 import { modulePlacement } from './module-placement';
+import { dataMasking } from './data-masking';
 import { Buffer } from './utils/buffer';
 import { Matrix, exportMatrix } from './utils/matrix';
 
@@ -154,16 +155,16 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 		finalMessage,
 		encodedData.current,
 		errorCodewords,
-		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel)
+		getIndexErrorCorrectionCodeWords(version, errorCorrectionLevel),
+		version
 	);
 
 	const matrix = new Matrix((version - 1) * 4 + 21, version);
 
-	modulePlacement(matrix);
+	modulePlacement(matrix, finalMessage);
+	dataMasking(matrix);
 
 	exportMatrix(matrix);
 
 	return encodedData.size;
 }
-
-// [TRACE] : finalMessage = Array length = 26 => 32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17, 196, 35, 39, 119, 235, 215, 231, 226, 93, 23

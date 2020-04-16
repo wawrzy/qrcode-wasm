@@ -1,21 +1,31 @@
 import { debug } from './logger';
+import { deepCopy } from './array';
 
 export class Matrix {
 	private matrix: Array<i32> = [];
 	private reserved: Array<i8> = [];
 
 	private size: i32 = 0;
-	private version: i32 = 0; // QR Code version (needed for some placement)
+	private version: i32 = 0; // QR Code version (needed for some calcul)
 
-	constructor(size: i32, version: i32) {
+	constructor(size: i32, version: i32, matrix: Matrix | null = null) {
 		this.matrix = new Array<i32>(size * size).fill(0);
 		this.reserved = new Array<i8>(size * size).fill(0);
 		this.size = size;
 		this.version = version;
+
+		if (matrix) {
+			deepCopy<i32>(matrix.current, this.matrix);
+			deepCopy<i8>(matrix.currentReserved, this.reserved);
+		}
 	}
 
 	get current(): Array<i32> {
 		return this.matrix;
+	}
+
+	get currentReserved(): Array<i8> {
+		return this.reserved;
 	}
 
 	get matrixSize(): i32 {
@@ -32,6 +42,12 @@ export class Matrix {
 
 	public invalidCoord(x: i32, y: i32): boolean {
 		return x >= this.size || x < 0 || y >= this.size || y < 0;
+	}
+
+	public swap(x: i32, y: i32): void {
+		const pos = y * this.size + x;
+
+		this.matrix[pos] = this.matrix[pos] === 0 ? 1 : 0;
 	}
 
 	public put(x: i32, y: i32, value: i32, reserved: i8 = 0): void {
@@ -66,6 +82,12 @@ export class Matrix {
 		}
 	}
 
+	/**
+	 * Check if a square overlap a resvered area
+	 * @param x
+	 * @param y
+	 * @param size square size
+	 */
 	public squareOverlap(x: i32, y: i32, size: i32): boolean {
 		for (let i = y; i < y + size; i++) {
 			for (let j = x; j < x + size; j++) {
@@ -79,6 +101,10 @@ export class Matrix {
 	}
 }
 
+/**
+ * Export matrix to memory [Matrix Size, data...]
+ * @param matrix
+ */
 export function exportMatrix(matrix: Matrix): void {
 	// Store matrix size
 	store<i32>(0 as u32, matrix.matrixSize);

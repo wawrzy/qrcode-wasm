@@ -6,6 +6,7 @@
 				v-for="(module, indexModule) in line"
 				v-bind:key="indexModule"
 				v-bind:class="{
+					blue: module === 2,
 					black: module === 1,
 					white: module === 0,
 					module: true,
