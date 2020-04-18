@@ -159,10 +159,14 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 		version
 	);
 
+	// Fill matrix
+
 	const matrix = new Matrix((version - 1) * 4 + 21, version);
 
 	modulePlacement(matrix, finalMessage);
 	dataMasking(matrix);
+
+	// Export matrix in memory
 
 	exportMatrix(matrix);
 

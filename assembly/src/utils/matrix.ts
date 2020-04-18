@@ -36,6 +36,10 @@ export class Matrix {
 		return this.version;
 	}
 
+	public value(x: i32, y: i32): i32 {
+		return this.matrix[y * this.size + x];
+	}
+
 	public isReserved(x: i32, y: i32): boolean {
 		return !!this.reserved[y * this.size + x];
 	}
