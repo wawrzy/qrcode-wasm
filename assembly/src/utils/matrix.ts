@@ -64,6 +64,10 @@ export class Matrix {
 		}
 	}
 
+	public forcePut(x: i32, y: i32, value: i32): void {
+		this.matrix[y * this.size + x] = value;
+	}
+
 	public drawSquare(
 		x: i32,
 		y: i32,

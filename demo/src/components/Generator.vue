@@ -42,7 +42,7 @@ export default class Generator extends Vue {
 			})
 			.then((instance) => {
 				wasm = instance;
-				const message = 'HELLO WORLD';
+				const message = 'Hello jérôme';
 				const ptrMessageToEncore = (wasm.__retain as Function)(
 					wasm.__allocString(message)
 				);

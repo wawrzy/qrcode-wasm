@@ -12,6 +12,7 @@ import { modulePlacement } from './module-placement';
 import { dataMasking } from './data-masking';
 import { Buffer } from './utils/buffer';
 import { Matrix, exportMatrix } from './utils/matrix';
+import { formatAndVersion } from './format-version';
 
 /**
  * Get best encoding mode of the message according to char code values and message length
@@ -164,7 +165,9 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 	const matrix = new Matrix((version - 1) * 4 + 21, version);
 
 	modulePlacement(matrix, finalMessage);
-	dataMasking(matrix);
+	const mask = dataMasking(matrix);
+
+	formatAndVersion(matrix, mask, errorCorrectionLevel);
 
 	// Export matrix in memory
 

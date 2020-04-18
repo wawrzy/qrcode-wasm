@@ -192,7 +192,7 @@ function computePenalityScore(matrix: Matrix): i32 {
 	return penalityScore;
 }
 
-export function dataMasking(matrix: Matrix): void {
+export function dataMasking(matrix: Matrix): i8 {
 	const NB_MASKS = 8;
 	let bestPenalityScore = Infinity;
 	let bestMask = 0;
@@ -219,4 +219,6 @@ export function dataMasking(matrix: Matrix): void {
 	debug('Best mask = ' + bestMask.toString());
 
 	applyMask(bestMask as i8, matrix);
+
+	return bestMask as i8;
 }
