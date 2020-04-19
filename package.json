@@ -1,6 +1,6 @@
 {
 	"name": "qrcode-wasm",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"scripts": {
 		"start:watch": "GULP_WATCH=1 gulp",
 		"build:lib": "gulp lib",
@@ -11,6 +11,12 @@
 	"types": "./dist/index.d.ts",
 	"repository": "https://github.com/wawrzy/qrcode-wasm.git",
 	"author": "julien <wawrzyniakjulien@gmail.com>",
+	"keywords": [
+		"wasm",
+		"qrcode",
+		"typescript",
+		"assemblyscript"
+	],
 	"license": "MIT",
 	"devDependencies": {
 		"assemblyscript": "^0.9.4",
