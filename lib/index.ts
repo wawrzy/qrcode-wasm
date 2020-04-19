@@ -50,7 +50,7 @@ export class QrCodeWasm {
 	public async encode(message: string): Promise<Int32Array> {
 		this.memory = new WebAssembly.Memory({ initial: 1 });
 
-		const instance = await loader.instantiateStreaming(fetch('./main.wasm'), {
+		const instance = await loader.instantiateStreaming(fetch('main.wasm'), {
 			config: this.config(),
 			env: this.env(),
 		});
