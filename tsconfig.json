@@ -2,6 +2,9 @@
 	"compilerOptions": {
 		"target": "es5",
 		"strict": true,
+		"declaration": true,
+		"declarationDir": "./dist",
+		"outDir": "./dist",
 		"module": "es2015",
 		"experimentalDecorators": true,
 		"noImplicitAny": false,
@@ -9,5 +12,5 @@
 		"moduleResolution": "node",
 		"lib": ["es2015", "dom"]
 	},
-	"include": ["./**/*.ts", "./**/*.vue"]
+	"include": ["./lib/*"]
 }

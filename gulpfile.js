@@ -1,33 +1,26 @@
-const gulp = require('gulp')
-const webpack = require('webpack-stream')
-const webserver = require('gulp-webserver')
+const gulp = require('gulp');
+const typescript = require('gulp-typescript');
 
 const path = {
 	WASM: ['./assembly/*.ts', './assembly/**/*.ts'],
-	DEMO: [
-		'./demo/src/*.js',
-		'./demo/src/**/*.js',
-		'./demo/src/*.vue',
-		'./demo/src/**/*.vue',
-	],
-	DEMO_STATIC: ['./demo/src/index.html', './build/wasm/*'],
-	DEMO_DIST: './demo/dist',
-}
+	SRC: ['./lib/*.ts'],
+	DIST: './dist',
+};
 
 /*
 		For more information see: https://docs.assemblyscript.org/details
 */
 gulp.task('wasm', (callback) => {
-	const asc = require('assemblyscript/bin/asc')
+	const asc = require('assemblyscript/bin/asc');
 	asc.main(
 		[
 			'main.ts',
 			'--baseDir',
 			'assembly/src',
 			'--binaryFile',
-			'../../build/wasm/main.wasm',
+			'../../dist/main.wasm',
 			'--textFile',
-			'../../build/wasm/main.wat',
+			'../../dist/main.wat',
 			'--sourceMap',
 			'--measure',
 			'--importMemory',
@@ -36,40 +29,33 @@ gulp.task('wasm', (callback) => {
 			'--optimize',
 		],
 		callback
-	)
-})
+	);
+});
 
-gulp.task('demo_static', function () {
-	return gulp.src(path.DEMO_STATIC).pipe(gulp.dest(path.DEMO_DIST))
-})
-
-gulp.task('demo_js', function () {
+gulp.task('lib', function () {
 	return gulp
-		.src(path.DEMO)
+		.src(path.SRC)
 		.pipe(
-			webpack({
-				config: require('./demo/webpack.config.js'),
+			typescript({
+				target: 'es5',
+				strict: true,
+				declaration: true,
+				declarationDir: './dist',
+				outDir: './dist',
+				module: 'es2015',
+				experimentalDecorators: true,
+				noImplicitAny: false,
+				strictNullChecks: false,
+				moduleResolution: 'node',
+				lib: ['es2015', 'dom'],
 			})
 		)
-		.pipe(gulp.dest(path.DEMO_DIST))
-})
+		.pipe(gulp.dest(path.DIST));
+});
 
-gulp.task('demo_webserver', function () {
-	gulp.src(path.DEMO_DIST).pipe(
-		webserver({
-			host: '127.0.0.1',
-			port: 6639,
-			livereload: true,
-			open: true,
-			fallback: './index.html',
-		})
-	)
-})
+if (process.env.GULP_WATCH) {
+	gulp.watch(path.SRC, gulp.series('lib'));
+	gulp.watch(path.WASM, gulp.series('wasm'));
+}
 
-gulp.watch(path.DEMO, gulp.parallel('demo_static', 'demo_js'))
-gulp.watch(path.WASM, gulp.series('wasm', 'demo_static'))
-
-gulp.task(
-	'default',
-	gulp.series('demo_js', 'wasm', 'demo_static', 'demo_webserver')
-)
+gulp.task('default', gulp.series('lib', 'wasm'));

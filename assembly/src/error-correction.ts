@@ -3,7 +3,6 @@ import {
 	generatorsPolynomial,
 	antilogs,
 } from './utils/constants';
-import { debugArray, debug } from './utils/logger';
 
 function sumAlpha(res: Array<i32>, val: Array<i32>): void {
 	for (let i = 0; i < res.length; i++) {
@@ -39,16 +38,11 @@ function divisions(
 	generatorPolynomial: Array<i32>,
 	errorCodewords: Array<Array<i32>>
 ): void {
-	debugArray(dataCodewords, 'dataCodewords = ');
-
 	const steps = dataCodewords.length;
-	debug('nb steps = ' + steps.toString());
 
 	const prevResult = new Array<i32>(0).concat(dataCodewords);
 
-	debugArray(prevResult, 'start prevResult = ');
 	for (let i = 0; i < steps; i++) {
-		debug('Step = ' + (i + 1).toString());
 		const tmpGenerator = new Array<i32>(0).concat(generatorPolynomial);
 
 		sumAlpha(
@@ -57,23 +51,15 @@ function divisions(
 				getAlphaFromInteger(prevResult[0])
 			)
 		);
-		debugArray(tmpGenerator, 'Sum alpha result  = ');
 
 		convertAlphaToInteger(tmpGenerator);
 
-		debugArray(tmpGenerator, 'tmpGenerator after convert to integer  = ');
-		debugArray(prevResult, 'prevResult before xor  = ');
-
 		xor(prevResult, tmpGenerator);
-
-		debugArray(prevResult, 'prevResult after xor  = ');
 
 		//  Discard lead terms 0
 		while (prevResult[0] === 0) {
 			prevResult.shift();
 		}
-
-		debugArray(prevResult, 'prevResult after shifting = ');
 	}
 
 	errorCodewords.push(prevResult);
@@ -115,9 +101,4 @@ export function generateErrorCodewords(
 		);
 		divisions(tmp, generatorPolynomial, errorCodewords);
 	}
-
-	// DEBUG
-	errorCodewords.forEach((errorCodeword, index) => {
-		debugArray(errorCodeword, 'Error codeword ' + index.toString() + ' : ');
-	});
 }

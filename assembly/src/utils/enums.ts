@@ -20,3 +20,8 @@ export enum UpperLimits {
 	Byte = 2953,
 	// Kanji not yet supported
 }
+
+export enum Error {
+	Encoding = 10, // Message encoding not supported
+	TooLong = 20, // Message too long (maximum size depends on encoding)
+}

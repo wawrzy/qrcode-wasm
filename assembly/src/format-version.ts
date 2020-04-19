@@ -9,6 +9,14 @@ enum Direction {
 	Horizontal = 1, // Left to Right
 }
 
+/**
+ * Add string of bits to matrix in a certain way
+ * @param matrix
+ * @param x
+ * @param y
+ * @param value
+ * @param direction
+ */
 function addStringToMatrix(
 	matrix: Matrix,
 	x: i32,

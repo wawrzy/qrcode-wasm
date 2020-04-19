@@ -1,5 +1,4 @@
 import { alignPatterns } from './utils/constants';
-import { debug } from './utils/logger';
 import { Matrix } from './utils/matrix';
 
 function setFinderPatterns(matrix: Matrix): void {
@@ -30,8 +29,6 @@ function setAlignPatterns(matrix: Matrix): void {
 		for (let j = 0; j < positions.length; j++) {
 			const x = positions[i] - 2;
 			const y = positions[j] - 2;
-
-			debug('(' + x.toString() + ', ' + y.toString() + ')');
 
 			if (!matrix.squareOverlap(x, y, 5)) {
 				matrix.drawSquare(x, y, 5, 1, 1);
@@ -97,7 +94,6 @@ function setDataBits(matrix: Matrix, message: Array<i32>): void {
 	while (messageIdx < message.length) {
 		if (!matrix.isReserved(x, y) && !matrix.invalidCoord(x, y)) {
 			matrix.put(x, y, message[messageIdx]);
-			debug(messageIdx.toString());
 
 			messageIdx++;
 		}
@@ -132,8 +128,6 @@ function setDataBits(matrix: Matrix, message: Array<i32>): void {
 }
 
 export function modulePlacement(matrix: Matrix, message: Array<i32>): void {
-	debug(matrix.qrCodeVersion.toString());
-
 	setFinderPatterns(matrix);
 
 	if (matrix.qrCodeVersion > 1) {

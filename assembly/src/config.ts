@@ -2,4 +2,6 @@
  * functions imported from JS env
  */
 
-export declare function DEBUG(): i8
+// 0 === Disable, 1 === Enable
+// This will reduce performance
+export declare function DEBUG(): i8;

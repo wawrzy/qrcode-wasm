@@ -78,7 +78,7 @@ export function structureMessage(
 		}
 	}
 
-	debugArray(finalDecMessage, 'finalDecMessage = ');
+	debugArray(finalDecMessage, 'final message (base 10) = ');
 
 	convertMessageToBits(finalDecMessage, finalMessage);
 
@@ -89,5 +89,5 @@ export function structureMessage(
 		finalMessage.push(0);
 	}
 
-	debugArray(finalMessage, 'finalMessage = ');
+	debugArray(finalMessage, 'final message (in bits) = ');
 }

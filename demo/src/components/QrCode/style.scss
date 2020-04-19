@@ -1,0 +1,61 @@
+.qrcode {
+	margin: 16px;
+	box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	transform-style: preserve-3d;
+	transform-origin: top center;
+	will-change: transform;
+	transform: skewX(0.001deg);
+	transition: transform 0.35s ease-in-out;
+
+	&::after {
+		display: block;
+		content: '';
+		position: absolute;
+		z-index: 100;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 120%;
+		background: linear-gradient(
+			226deg,
+			rgba(255, 255, 255, 0.4) 0%,
+			rgba(255, 255, 255, 0.4) 35%,
+			rgba(255, 255, 255, 0.2) 42%,
+			rgba(255, 255, 255, 0) 60%
+		);
+		transform: translateY(-20%);
+		will-change: transform;
+		transition: transform 0.65s cubic-bezier(0.18, 0.9, 0.58, 1);
+	}
+
+	&:hover {
+		transform: rotateX(7deg) translateY(-6px);
+
+		&::after {
+			transform: translateY(0%);
+		}
+	}
+}
+
+.line {
+	display: flex;
+	align-items: center;
+}
+
+.module {
+	width: 15px;
+	height: 15px;
+
+	&.white {
+		background: white;
+	}
+
+	&.black {
+		background: black;
+	}
+
+	&.blue {
+		background: blue;
+	}
+}

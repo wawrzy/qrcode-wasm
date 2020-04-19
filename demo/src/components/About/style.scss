@@ -1,0 +1,30 @@
+.about-title {
+	display: flex;
+	justify-content: center;
+	font-size: 35px;
+	padding: 20px;
+	color: #191a1b;
+}
+
+.about-container {
+	background-color: #f5f6fa;
+}
+
+.logos {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px 0 40px;
+}
+
+.logo {
+	width: 100px;
+	margin: 0 20px;
+	cursor: pointer;
+}
+
+.signature {
+	display: flex;
+	justify-content: center;
+	padding: 20px 0;
+}

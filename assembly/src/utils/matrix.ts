@@ -113,9 +113,9 @@ export class Matrix {
  * Export matrix to memory [Matrix Size, data...]
  * @param matrix
  */
-export function exportMatrix(matrix: Matrix): void {
+export function exportMatrixToMemory(matrix: Matrix): void {
 	// Store matrix size
-	store<i32>(0 as u32, matrix.matrixSize);
+	store<i32>(0 as i32, matrix.matrixSize);
 
 	const vSize = 4; // In bytes
 	const current = matrix.current;

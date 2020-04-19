@@ -1,6 +1,5 @@
 <template>
-	<div class="root">
-		<div>Size = {{ size }}</div>
+	<div class="qrcode __cover">
 		<div v-for="(line, index) in qrCodeData" v-bind:key="index" class="line">
 			<div
 				v-for="(module, indexModule) in line"
@@ -20,7 +19,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import './QrCode.scss';
+import './style.scss';
 
 const Props = Vue.extend({
 	props: {

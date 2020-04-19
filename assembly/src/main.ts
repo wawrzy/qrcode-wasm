@@ -4,14 +4,14 @@ import {
 	errorCorrectionCodeWords,
 } from './utils/constants';
 import { dataEncoding } from './encoder';
-import { EncodingMode, ErrorLevel, UpperLimits } from './utils/enums';
+import { EncodingMode, ErrorLevel, UpperLimits, Error } from './utils/enums';
 import { debug, debugBuffer } from './utils/logger';
 import { generateErrorCodewords } from './error-correction';
 import { structureMessage } from './structure-message';
 import { modulePlacement } from './module-placement';
 import { dataMasking } from './data-masking';
 import { Buffer } from './utils/buffer';
-import { Matrix, exportMatrix } from './utils/matrix';
+import { Matrix, exportMatrixToMemory } from './utils/matrix';
 import { formatAndVersion } from './format-version';
 
 /**
@@ -112,13 +112,17 @@ function getRequiredCapacities(
 // TODO: Error management
 // TODO: Automatically detect best errorCorrectionLevel
 export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
-	debug('Message = ' + message);
+	debug('message = ' + message);
+	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString());
 
 	// Initialization
 
 	const encodingMode = getEncodingMode(message);
 	debug('encodingMode = ' + encodingMode.toString());
-	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString());
+
+	if (encodingMode === EncodingMode.Invalid) {
+		return Error.Encoding;
+	}
 
 	const version = getVersion(
 		message.length,
@@ -126,6 +130,10 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 		errorCorrectionLevel
 	);
 	debug('version = ' + version.toString());
+
+	if (version === -1) {
+		return Error.TooLong;
+	}
 
 	// Encoding
 
@@ -171,7 +179,7 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 
 	// Export matrix in memory
 
-	exportMatrix(matrix);
+	exportMatrixToMemory(matrix);
 
-	return encodedData.size;
+	return 0;
 }

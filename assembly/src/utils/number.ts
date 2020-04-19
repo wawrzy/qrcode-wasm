@@ -1,3 +1,9 @@
+/**
+ * Convert an i32 numbo to string of bits
+ * @param n
+ * @param res
+ * @param padStart Mininimal size of final string (add pad 0 if necessary)
+ */
 export function numberToBitsString(
 	n: i32,
 	res: string,

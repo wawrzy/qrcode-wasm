@@ -1,0 +1,13 @@
+@import '../../../node_modules/prismjs/themes/prism-twilight.css';
+
+.usage-title {
+	display: flex;
+	justify-content: center;
+	font-size: 35px;
+	margin-bottom: 20px;
+	color: white;
+}
+
+.prism {
+	margin: 0 30px 40px !important;
+}

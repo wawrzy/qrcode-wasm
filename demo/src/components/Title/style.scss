@@ -1,0 +1,32 @@
+.title-container {
+	display: flex;
+	justify-content: center;
+	font-size: 35px;
+	margin: 20px;
+	color: white;
+}
+
+.finder-pattern {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 5px;
+	height: 70px;
+	width: 70px;
+	border: 10px solid white;
+
+	&.left {
+		left: 15px;
+	}
+
+	&.right {
+		right: 15px;
+	}
+
+	.center {
+		width: 25px;
+		height: 25px;
+		background: white;
+	}
+}
