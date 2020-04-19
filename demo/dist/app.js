@@ -236,7 +236,8 @@ function (_super) {
     var _this = this;
 
     this.generator = new qrcode_wasm__WEBPACK_IMPORTED_MODULE_2__["QrCodeWasm"]({
-      debug: true
+      debug: true,
+      wasmPath: 'demo/dist/main.wasm'
     });
     this.generator.encode('HELLO WORLD').then(function (buffer) {
       _this.matrix = buffer;
@@ -2285,6 +2286,7 @@ var QrCodeWasm = /** @class */ (function () {
             memory: _this.memory,
         }); };
         this.debug = !!config.debug;
+        this.wasmPath = config.wasmPath || 'main.wasm';
     }
     QrCodeWasm.prototype.encode = function (message) {
         return __awaiter(this, void 0, void 0, function () {
@@ -2294,7 +2296,7 @@ var QrCodeWasm = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.memory = new WebAssembly.Memory({ initial: 1 });
-                        return [4 /*yield*/, _assemblyscript_loader__WEBPACK_IMPORTED_MODULE_0__["instantiateStreaming"](fetch('main.wasm'), {
+                        return [4 /*yield*/, _assemblyscript_loader__WEBPACK_IMPORTED_MODULE_0__["instantiateStreaming"](fetch(this.wasmPath), {
                                 config: this.config(),
                                 env: this.env(),
                             })];

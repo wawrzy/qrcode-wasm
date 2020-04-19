@@ -36,7 +36,10 @@ export default class Generator extends Vue {
 	message: string = '';
 
 	mounted() {
-		this.generator = new QrCodeWasm({ debug: true });
+		this.generator = new QrCodeWasm({
+			debug: true,
+			wasmPath: 'demo/dist/main.wasm',
+		});
 
 		this.generator.encode('HELLO WORLD').then((buffer) => {
 			this.matrix = buffer as Int32Array;

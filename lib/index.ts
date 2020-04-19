@@ -6,6 +6,7 @@ interface IWasmInstance extends loader.ASUtil {
 
 interface IConfig {
 	debug?: boolean;
+	wasmPath?: string;
 }
 
 enum Error {
@@ -25,11 +26,14 @@ const CodeFromError = {
 
 export class QrCodeWasm {
 	private debug: boolean;
+	private wasmPath: string;
+
 	private wasm: IWasmInstance;
 	private memory: WebAssembly.Memory;
 
 	constructor(config: IConfig = {}) {
 		this.debug = !!config.debug;
+		this.wasmPath = config.wasmPath || 'main.wasm';
 	}
 
 	private __DEBUG__ = (): 0 | 1 => {
@@ -50,7 +54,7 @@ export class QrCodeWasm {
 	public async encode(message: string): Promise<Int32Array> {
 		this.memory = new WebAssembly.Memory({ initial: 1 });
 
-		const instance = await loader.instantiateStreaming(fetch('main.wasm'), {
+		const instance = await loader.instantiateStreaming(fetch(this.wasmPath), {
 			config: this.config(),
 			env: this.env(),
 		});
