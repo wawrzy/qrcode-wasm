@@ -1,6 +1,6 @@
 {
 	"name": "qrcode-wasm",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"scripts": {
 		"start:watch": "GULP_WATCH=1 gulp",
 		"build:lib": "gulp lib",
