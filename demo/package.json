@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"scripts": {
 		"start": "dev=true gulp",
-		"build": "gulp"
+		"build:prod": "gulp"
 	},
 	"main": "index.js",
 	"repository": "https://github.com/wawrzy/qrcode-wasm.git",

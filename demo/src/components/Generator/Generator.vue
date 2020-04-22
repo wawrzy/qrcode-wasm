@@ -40,7 +40,7 @@ export default class Generator extends Vue {
 	mounted() {
 		this.generator = new QrCodeWasm({
 			debug: true,
-			wasmPath: ENV === 'production' ? 'demo/dist/main.wasm' : 'main.wasm',
+			wasmPath: ENV === 'PRODUCTION' ? 'demo/dist/main.wasm' : 'main.wasm',
 		});
 
 		this.generator.encode('HELLO WORLD').then((buffer) => {

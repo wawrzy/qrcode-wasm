@@ -237,7 +237,7 @@ function (_super) {
 
     this.generator = new qrcode_wasm__WEBPACK_IMPORTED_MODULE_2__["QrCodeWasm"]({
       debug: true,
-      wasmPath:  false ? undefined : 'main.wasm'
+      wasmPath:  true ? 'demo/dist/main.wasm' : undefined
     });
     this.generator.encode('HELLO WORLD').then(function (buffer) {
       _this.matrix = buffer;
