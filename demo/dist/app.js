@@ -237,7 +237,7 @@ function (_super) {
 
     this.generator = new qrcode_wasm__WEBPACK_IMPORTED_MODULE_2__["QrCodeWasm"]({
       debug: true,
-      wasmPath: 'demo/dist/main.wasm'
+      wasmPath:  false ? undefined : 'main.wasm'
     });
     this.generator.encode('HELLO WORLD').then(function (buffer) {
       _this.matrix = buffer;
@@ -2305,7 +2305,7 @@ var QrCodeWasm = /** @class */ (function () {
                         console.log(instance);
                         this.wasm = instance;
                         ptrMessageToEncore = this.wasm.__retain(this.wasm.__allocString(message));
-                        error = this.wasm.main(ptrMessageToEncore, 3);
+                        error = this.wasm.main(ptrMessageToEncore);
                         return [2 /*return*/, new Promise(function (resolve, reject) {
                                 if (error !== 0) {
                                     reject(CodeFromError[error]);

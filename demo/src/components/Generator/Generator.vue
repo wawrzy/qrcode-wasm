@@ -27,6 +27,8 @@ import QrCode from '../QrCode/QrCode.vue';
 
 import './style.scss';
 
+declare var ENV: string;
+
 @Component({
 	components: { QrCode },
 })
@@ -38,7 +40,7 @@ export default class Generator extends Vue {
 	mounted() {
 		this.generator = new QrCodeWasm({
 			debug: true,
-			wasmPath: 'demo/dist/main.wasm',
+			wasmPath: ENV === 'production' ? 'demo/dist/main.wasm' : 'main.wasm',
 		});
 
 		this.generator.encode('HELLO WORLD').then((buffer) => {

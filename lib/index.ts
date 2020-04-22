@@ -1,7 +1,7 @@
 import * as loader from '@assemblyscript/loader';
 
 interface IWasmInstance extends loader.ASUtil {
-	main: (ptr: number, errorLevel: number) => number;
+	main: (ptr: number) => number;
 }
 
 interface IConfig {
@@ -67,7 +67,7 @@ export class QrCodeWasm {
 			this.wasm.__allocString(message)
 		);
 
-		const error = this.wasm.main(ptrMessageToEncore, 3);
+		const error = this.wasm.main(ptrMessageToEncore);
 
 		return new Promise((resolve, reject) => {
 			if (error !== 0) {

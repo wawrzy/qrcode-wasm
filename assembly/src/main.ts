@@ -58,25 +58,46 @@ function getEncodingMode(message: string): EncodingMode {
  * Minimal version = 1 / maximal = 40 / -1 Too large
  * @param msgLength
  * @param encodingMode
- * @param errorCorrectionLevel
  */
-function getVersion(
-	msgLength: i32,
-	encodingMode: EncodingMode,
-	errorCorrectionLevel: ErrorLevel
-): i32 {
-	const errorIdx = errorCorrectionLevel - 1;
+function getVersion(msgLength: i32, encodingMode: EncodingMode): i32 {
 	const encodingIdx = encodingMode - 1;
 
 	for (let i = 0; i < characterCapacities.length; i++) {
-		const size = characterCapacities[i][errorIdx][encodingIdx];
-
-		if (msgLength <= size) {
-			return i + 1;
+		for (let errorLevel = 0; errorLevel < 4; errorLevel++) {
+			const size = characterCapacities[i][errorLevel][encodingIdx];
+			if (msgLength <= size) {
+				return i + 1;
+			}
 		}
 	}
 
 	return -1;
+}
+
+/**
+ * Get best error level depends on version and message length
+ * @param msgLength
+ * @param encodingMode
+ * @param version
+ */
+function getErrorLevel(
+	msgLength: i32,
+	encodingMode: EncodingMode,
+	version: i32
+): ErrorLevel {
+	const encodingIdx = encodingMode - 1;
+	const versionIdx = version - 1;
+
+	const levels = [ErrorLevel.L, ErrorLevel.M, ErrorLevel.Q, ErrorLevel.H];
+
+	for (let errorLevel = 3; errorLevel >= 0; errorLevel--) {
+		const size = characterCapacities[versionIdx][errorLevel][encodingIdx];
+		if (msgLength <= size) {
+			return levels[errorLevel];
+		}
+	}
+
+	return ErrorLevel.L;
 }
 
 /**
@@ -111,9 +132,8 @@ function getRequiredCapacities(
 
 // TODO: Error management
 // TODO: Automatically detect best errorCorrectionLevel
-export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
+export function main(message: string): i32 {
 	debug('message = ' + message);
-	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString());
 
 	// Initialization
 
@@ -124,12 +144,15 @@ export function main(message: string, errorCorrectionLevel: ErrorLevel): i32 {
 		return Error.Encoding;
 	}
 
-	const version = getVersion(
+	const version = getVersion(message.length, encodingMode);
+	debug('version = ' + version.toString());
+
+	const errorCorrectionLevel = getErrorLevel(
 		message.length,
 		encodingMode,
-		errorCorrectionLevel
+		version
 	);
-	debug('version = ' + version.toString());
+	debug('errorCorrectionLevel = ' + errorCorrectionLevel.toString());
 
 	if (version === -1) {
 		return Error.TooLong;

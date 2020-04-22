@@ -5,7 +5,7 @@ const webserver = require('gulp-webserver');
 const path = {
 	WASM: ['./assembly/*.ts', './assembly/**/*.ts'],
 	DEMO: ['./src/*.js', './src/**/*.js', './src/*.vue', './src/**/*.vue'],
-	DEMO_STATIC: ['./src/index.html', '../build/wasm/*'],
+	DEMO_STATIC: ['./src/index.html', '../dist/main.wa*'],
 	DEMO_DIST: './dist',
 };
 
@@ -36,6 +36,9 @@ gulp.task('demo_webserver', function () {
 	);
 });
 
-gulp.watch(path.DEMO, gulp.parallel('demo_static', 'demo_js'));
-
-gulp.task('default', gulp.series('demo_js', 'demo_static', 'demo_webserver'));
+if (process.env.dev) {
+	gulp.watch(path.DEMO, gulp.parallel('demo_static', 'demo_js'));
+	gulp.task('default', gulp.series('demo_js', 'demo_static', 'demo_webserver'));
+} else {
+	gulp.task('default', gulp.series('demo_js', 'demo_static'));
+}

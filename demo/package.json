@@ -2,7 +2,8 @@
 	"name": "qrcode-wasm-demo",
 	"version": "1.0.0",
 	"scripts": {
-		"start": "gulp"
+		"start": "dev=true gulp",
+		"build": "gulp"
 	},
 	"main": "index.js",
 	"repository": "https://github.com/wawrzy/qrcode-wasm.git",
