@@ -21,6 +21,14 @@ await generator.encode('HELLO WORLD').then((buffer) => {
 const dataURL = await generator.png(200 /* PNG size in Pixel */);
 ```
 
+### Webpack
+
+If you want to use this package with webpack you must include the main.wasm file in your build output. You can customize the name or path to this file with the `wasmPath` option.
+
+```javascript
+const generator = new QrCodeWasm({ wasmPath: 'scripts/custom.wasm' });
+```
+
 ## Errors
 
 | CODE      | DESCRIPTION                    |
