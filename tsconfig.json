@@ -5,7 +5,7 @@
 		"declaration": true,
 		"declarationDir": "./dist",
 		"outDir": "./dist",
-		"module": "es2015",
+		"module": "esnext",
 		"experimentalDecorators": true,
 		"noImplicitAny": false,
 		"strictNullChecks": false,

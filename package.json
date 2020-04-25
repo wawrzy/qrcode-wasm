@@ -27,6 +27,7 @@
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
-		"@assemblyscript/loader": "^0.9.4"
+		"@assemblyscript/loader": "^0.9.4",
+		"dom-to-image": "^2.6.0"
 	}
 }

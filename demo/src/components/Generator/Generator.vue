@@ -14,11 +14,13 @@
 			v-if="matrix"
 			v-bind:matrix="matrix.slice(0, matrix[0] * matrix[0] + 1)"
 		/>
+		<button type="button" v-on:click="png" class="btn btn--primary uppercase">
+			Download png
+		</button>
 	</div>
 </template>
 
 <script lang="ts">
-// import * as loader from '@assemblyscript/loader';
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
@@ -52,6 +54,17 @@ export default class Generator extends Vue {
 		this.generator.encode(this.message).then((buffer) => {
 			this.matrix = buffer as Int32Array;
 		});
+	}
+
+	async png() {
+		const dataUrl = await this.generator.png(200);
+
+		const link = document.createElement('a');
+		link.download = 'qr-code.png';
+		link.href = dataUrl;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	}
 }
 </script>

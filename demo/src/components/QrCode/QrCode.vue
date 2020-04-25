@@ -1,5 +1,5 @@
 <template>
-	<div class="qrcode __cover">
+	<div class="qrcode __cover" id="qrcode">
 		<div v-for="(line, index) in qrCodeData" v-bind:key="index" class="line">
 			<div
 				v-for="(module, indexModule) in line"
