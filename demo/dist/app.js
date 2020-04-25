@@ -688,7 +688,7 @@ function (_super) {
   function Usage() {
     var _this = _super !== null && _super.apply(this, arguments) || this;
 
-    _this.code = "\n    import { QrCodeWasm } from 'qrcode-wasm';\n\n    const generator = new QrCodeWasm({ debug: true });\n\n    generator.encode('HELLO WORLD').then((buffer) => {\n      // buffer = Int32Array\n      // [Size Matrix, 1, 0, 1, 0, 0 ....]\n      // 1 = Dark Module\n      // 0 = White Module\n    });\n  ";
+    _this.code = "\n    import { QrCodeWasm } from 'qrcode-wasm';\n\n    const generator = new QrCodeWasm({ debug: true });\n\n    await generator.encode('HELLO WORLD').then((buffer) => {\n      // buffer = Int32Array\n      // [Side size of Matrix (total size = Side Size * Side Size), 1, 0, 1, 0, 0 ....]\n      // 1 = Dark Module\n      // 0 = White Module\n    });\n\n    const dataURL = await generator.png(200 /* PNG size in Pixel */);\n  ";
     return _this;
   }
 

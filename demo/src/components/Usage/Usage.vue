@@ -26,12 +26,14 @@ export default class Usage extends Vue {
 
     const generator = new QrCodeWasm({ debug: true });
 
-    generator.encode('HELLO WORLD').then((buffer) => {
+    await generator.encode('HELLO WORLD').then((buffer) => {
       // buffer = Int32Array
-      // [Size Matrix, 1, 0, 1, 0, 0 ....]
+      // [Side size of Matrix (total size = Side Size * Side Size), 1, 0, 1, 0, 0 ....]
       // 1 = Dark Module
       // 0 = White Module
     });
+
+    const dataURL = await generator.png(200 /* PNG size in Pixel */);
   `;
 }
 </script>

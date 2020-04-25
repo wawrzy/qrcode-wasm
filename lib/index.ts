@@ -54,7 +54,7 @@ export class QrCodeWasm {
 
 	private env = (): loader.ImportsObject['env'] => ({
 		trace: (msg) => {
-			console.log('[TRACE] : ' + this.wasm.__getString(msg));
+			console.log('[TRACE] : ' + this.wasm.__getString(msg)); // For debugging
 		},
 		memory: this.memory,
 	});
