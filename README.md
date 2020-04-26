@@ -11,14 +11,14 @@ import { QrCodeWasm } from 'qrcode-wasm';
 
 const generator = new QrCodeWasm({ debug: true });
 
-await generator.encode('HELLO WORLD').then((buffer) => {
+generator.encode('HELLO WORLD').then(async (buffer) => {
 	// buffer = Int32Array
 	// [Side size of Matrix (total size = Side Size * Side Size), 1, 0, 1, 0, 0 ....]
 	// 1 = Dark Module
 	// 0 = White Module
-});
 
-const dataURL = await generator.png(200 /* PNG size in Pixel */);
+	const dataURL = await generator.png(200 /* PNG size in Pixel */);
+});
 ```
 
 ### Webpack

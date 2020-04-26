@@ -2,3 +2,8 @@ demo
 index.html
 assembly
 .vscode
+dist/main.wasm.map
+dist/main.wat
+yarn-error.log
+gulpfile.js
+tsconfig.json
